@@ -69,5 +69,7 @@ export class UsersService {
     }
   }
 
-  // make a JWT and give it to user
+  async findById(id: number): Promise<User> {
+    return this.users.findOne({ id });
+  }
 }
