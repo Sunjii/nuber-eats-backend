@@ -76,7 +76,10 @@ export class UsersService {
     return this.users.findOne({ id });
   }
 
-  async editProfile(userId: number, { email, password }: EditProfileInput) {
+  async editProfile(
+    userId: number,
+    { email, password }: EditProfileInput,
+  ): Promise<User> {
     // return this.users.update(userId, { ...editProfileInput }); // ... means spread operator
     // this.users.update() : Does not check if entity exist in the DB = just send query to DB
     // 그래서 BefoerUpdate()를 호출하지 않는다.
