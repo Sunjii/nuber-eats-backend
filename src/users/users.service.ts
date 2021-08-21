@@ -8,6 +8,7 @@ import * as jwt from 'jsonwebtoken';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from 'src/jwt/jwt.service';
 import { EditProfileInput } from './dtos/edit-profile.dto';
+import { isEmail } from 'class-validator';
 
 @Injectable()
 export class UsersService {
@@ -75,7 +76,17 @@ export class UsersService {
     return this.users.findOne({ id });
   }
 
-  async editProfile(userId: number, editProfileInput: EditProfileInput) {
-    return this.users.update(userId, { ...editProfileInput }); // ... means spread operator
+  async editProfile(userId: number, { email, password }: EditProfileInput) {
+    // return this.users.update(userId, { ...editProfileInput }); // ... means spread operator
+    // this.users.update() : Does not check if entity exist in the DB = just send query to DB
+    // 그래서 BefoerUpdate()를 호출하지 않는다.
+    const user = await this.users.findOne(userId);
+    if (email) {
+      user.email = email;
+    }
+    if (password) {
+      user.password = password;
+    }
+    return this.users.save(user);
   }
 }
