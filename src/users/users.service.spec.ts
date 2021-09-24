@@ -84,6 +84,7 @@ describe('UserService', () => {
         error: 'There is a user with that email already',
       });
     });
+
     it('Should create a new user', async () => {
       usersRepository.findOne.mockReturnValue(undefined); // User will not found.
       usersRepository.create.mockReturnValue(createAccountArgs); // for save test
@@ -112,7 +113,15 @@ describe('UserService', () => {
       );
       expect(result).toEqual({ ok: true });
     });
+
+    it('Should fail on exception', async () => {
+      // findOne
+      usersRepository.findOne.mockRejectedValue(new Error());
+      const result = await service.createAccount(createAccountArgs);
+      expect(result).toEqual({ ok: false, error: "Couldn't create account" });
+    });
   });
+
   it.todo('login');
   it.todo('findById');
   it.todo('editProfile');
