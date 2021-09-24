@@ -68,7 +68,11 @@ describe('UserService', () => {
   });
 
   describe('createAccount', () => {
-    const createAccountArgs = { email: '', password: '', role: 0 };
+    const createAccountArgs = {
+      email: 'test@email.com',
+      password: 'testing',
+      role: 0,
+    };
     it('Should fail if user exists', async () => {
       usersRepository.findOne.mockResolvedValue({
         id: 1,
@@ -98,9 +102,9 @@ describe('UserService', () => {
         user: createAccountArgs,
       });
       expect(verificationsRepository.save).toHaveBeenCalledTimes(1);
-      expect(verificationsRepository.save).toHaveBeenCalledWith(
-        createAccountArgs,
-      );
+      expect(verificationsRepository.save).toHaveBeenCalledWith({
+        user: createAccountArgs,
+      });
       expect(mailService.sendVerificationEmail).toHaveBeenCalledTimes(1);
       expect(mailService.sendVerificationEmail).toHaveBeenCalledWith(
         expect.any(String),
