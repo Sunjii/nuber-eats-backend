@@ -89,7 +89,7 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
-    "coveragePathIgnorePattenrs": [
+    "coveragePathIgnorePatterns": [
       "node_moudles",
       ".entity.ts",
       ".onstants.ts"
