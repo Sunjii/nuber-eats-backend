@@ -222,6 +222,28 @@ describe('UserService', () => {
         newVerification.code,
       );
     });
+
+    it('Should change password', async () => {
+      const editProfileArgs = {
+        input: { password: 'newpassword' },
+        userId: 1,
+      };
+      usersRepository.findOne.mockResolvedValue({ password: 'old' });
+
+      const result = await service.editProfile(
+        editProfileArgs.userId,
+        editProfileArgs.input,
+      );
+      expect(usersRepository.save).toHaveBeenCalledTimes(1);
+      expect(usersRepository.save).toHaveBeenCalledWith(editProfileArgs.input);
+      expect(result).toEqual({ ok: true });
+    });
+
+    it('Should fail on exception', async () => {
+      usersRepository.findOne.mockRejectedValue(new Error());
+      const result = await service.editProfile(1, { email: 'test' });
+      expect(result).toEqual({ ok: false, error: 'Could not update profile.' });
+    });
   });
 
   it.todo('verifyEmail');
