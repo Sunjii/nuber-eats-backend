@@ -17,14 +17,14 @@ const mockRepository = () => ({
   findOneOrFail: jest.fn(),
 });
 
-const mockJwtService = {
+const mockJwtService = () => ({
   sign: jest.fn(() => 'signed-token'),
   verify: jest.fn(),
-};
+});
 
-const mockMailService = {
+const mockMailService = () => ({
   sendVerificationEmail: jest.fn(),
-};
+});
 
 type MockRepository<T = any> = Partial<
   Record<keyof Repository<User>, jest.Mock>
@@ -52,11 +52,11 @@ describe('UserService', () => {
         },
         {
           provide: JwtService,
-          useValue: mockJwtService,
+          useValue: mockJwtService(),
         },
         {
           provide: MailService,
-          useValue: mockMailService,
+          useValue: mockMailService(),
         },
       ],
     }).compile();
@@ -216,6 +216,7 @@ describe('UserService', () => {
         newVerification,
       );
 
+      expect(mailService.sendVerificationEmail).toHaveBeenCalledTimes(1);
       expect(mailService.sendVerificationEmail).toHaveBeenCalledWith(
         newUser.email,
         newVerification.code,
