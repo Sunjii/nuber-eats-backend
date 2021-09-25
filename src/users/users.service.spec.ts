@@ -2,6 +2,7 @@ import { Test } from '@nestjs/testing';
 import { getCustomRepositoryToken, getRepositoryToken } from '@nestjs/typeorm';
 import exp from 'constants';
 import { create } from 'domain';
+import { defaultIfEmpty } from 'rxjs';
 import { JwtService } from 'src/jwt/jwt.service';
 import { MailService } from 'src/mail/mail.service';
 import { Repository } from 'typeorm';
@@ -184,7 +185,43 @@ describe('UserService', () => {
     });
   });
 
-  it.todo('editProfile');
+  describe('editProfile', () => {
+    it('Should change email', async () => {
+      const oldUser = { email: 'test@old.com', verified: true };
+      const editProfileArgs = {
+        input: { email: 'test@new.com' },
+        userId: 1,
+      };
+      const newVerification = { code: 'code' };
+      const newUser = {
+        verified: false,
+        email: editProfileArgs.input.email,
+      };
+
+      usersRepository.findOne.mockResolvedValue(oldUser);
+      verificationsRepository.create.mockReturnValue(newVerification);
+      verificationsRepository.save.mockResolvedValue(newVerification);
+
+      await service.editProfile(editProfileArgs.userId, editProfileArgs.input);
+      expect(usersRepository.findOne).toHaveBeenCalledTimes(1);
+      expect(usersRepository.findOne).toHaveBeenCalledWith(
+        editProfileArgs.userId,
+      );
+
+      // new email, new user
+      expect(verificationsRepository.create).toHaveBeenCalledWith({
+        user: newUser,
+      });
+      expect(verificationsRepository.save).toHaveBeenCalledWith(
+        newVerification,
+      );
+
+      expect(mailService.sendVerificationEmail).toHaveBeenCalledWith(
+        newUser.email,
+        newVerification.code,
+      );
+    });
+  });
 
   it.todo('verifyEmail');
 });
