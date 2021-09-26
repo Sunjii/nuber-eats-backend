@@ -41,7 +41,7 @@ describe('MailService', () => {
         code: 'code',
       };
       // spyFunction
-      jest.spyOn(service, 'sendEmail').mockImplementation(async () => {});
+      jest.spyOn(service, 'sendEmail').mockImplementation(async () => true);
       service.sendVerificationEmail(
         sendVerificationEmailArgs.email,
         sendVerificationEmailArgs.code,
@@ -55,16 +55,17 @@ describe('MailService', () => {
   });
 
   describe('sendEmail', () => {
-    it('sends email', () => {
-      service.sendEmail('', '', []);
+    it('sends email', async () => {
+      const ok = await service.sendEmail('', '', []);
       const formSpy = jest.spyOn(FormData.prototype, 'append');
       expect(formSpy).toHaveBeenCalled();
 
-      expect(got).toHaveBeenCalledTimes(1);
-      expect(got).toBeCalledWith(
+      expect(got.post).toHaveBeenCalledTimes(1);
+      expect(got.post).toBeCalledWith(
         `https://api.mailgun.net/v3/${TEST_DOMAIN}/messages`,
         expect.any(Object),
       );
+      expect(ok).toEqual(true);
     });
   });
 });
