@@ -67,5 +67,14 @@ describe('MailService', () => {
       );
       expect(ok).toEqual(true);
     });
+
+    it('fails on error', async () => {
+      jest.spyOn(got, 'post').mockImplementation(() => {
+        // make error
+        throw new Error();
+      });
+      const ok = await service.sendEmail('', '', []);
+      expect(ok).toEqual(false);
+    });
   });
 });
