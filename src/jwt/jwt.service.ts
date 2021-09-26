@@ -8,10 +8,10 @@ import { CONFIG_OPTIONS } from 'src/common/common.constants';
 export class JwtService {
   constructor(
     @Inject(CONFIG_OPTIONS) private readonly options: JwtModuleOptions,
-    private readonly configService: ConfigService,
-  ) {}
+  ) //private readonly configService: ConfigService,
+  {}
   sign(userID: number): string {
-    return jwt.sign({ id: userID }, this.configService.get('PRIVATE_KEY'));
+    return jwt.sign({ id: userID }, this.options.privateKey);
   }
   verify(token: string) {
     return jwt.verify(token, this.options.privateKey);
