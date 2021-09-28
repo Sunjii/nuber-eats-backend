@@ -6,7 +6,7 @@ import { AppModule } from '../src/app.module';
 describe('UsersModule (e2e)', () => {
   let app: INestApplication;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -14,4 +14,16 @@ describe('UsersModule (e2e)', () => {
     app = module.createNestApplication();
     await app.init();
   });
+
+  it.todo('me');
+
+  it.todo('userProfile');
+
+  it.todo('createAccount');
+
+  it.todo('login');
+
+  it.todo('editProfile');
+
+  it.todo('verifyEmail');
 });
