@@ -38,7 +38,6 @@ export class MailService {
               `api:${this.options.apiKey}`,
             ).toString('base64')}`,
           },
-
           body: form,
         },
       );
