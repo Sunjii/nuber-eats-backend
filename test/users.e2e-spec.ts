@@ -4,6 +4,8 @@ import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { getConnection } from 'typeorm';
 
+const GRAPHQL_ENDPOINT = '/graphql';
+
 describe('UsersModule (e2e)', () => {
   let app: INestApplication;
 
@@ -24,15 +26,39 @@ describe('UsersModule (e2e)', () => {
   //
   // Should e2e test
   //
-  it.todo('me');
+  describe('createAccount', () => {
+    const EMAIL = 'test@test.com';
+    it('should create account', () => {
+      return request(app.getHttpServer())
+        .post(GRAPHQL_ENDPOINT)
+        .send({
+          query: `
+          mutation {
+            createAccount(input: {
+              email:"${EMAIL}",
+              password:"12345",
+              role:Owner
+            }) {
+              ok
+              error
+            }
+          }`,
+        })
+        .expect(200)
+        .expect((res) => {
+          expect(res.body.data.createAccount.ok).toBe(true);
+          expect(res.body.data.createAccount.error).toBe(null);
+        });
+    });
+  });
 
   it.todo('userProfile');
 
-  it.todo('createAccount');
-
   it.todo('login');
 
-  it.todo('editProfile');
+  it.todo('me');
 
   it.todo('verifyEmail');
+
+  it.todo('editProfile');
 });
