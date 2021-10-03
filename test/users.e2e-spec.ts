@@ -153,10 +153,47 @@ describe('UsersModule (e2e)', () => {
   });
 
   describe('userProfile', () => {
+    let userId: number;
     beforeAll(async () => {
-      console.log(await usersRepository.find());
+      const [user] = await usersRepository.find();
+      userId = user.id;
     });
-    it("should see a user's profile", () => {});
+
+    it("should see a user's profile", () => {
+      return request(app.getHttpServer())
+        .post(GRAPHQL_ENDPOINT)
+        .set('X-JWT', jwtToken)
+        .send({
+          query: `
+        {
+          userProfile(userId:${userId}){
+            ok
+            error
+            user{
+              id
+            }
+          }
+        }
+        `,
+        })
+        .expect(200)
+        .expect((res) => {
+          const {
+            body: {
+              data: {
+                userProfile: {
+                  ok,
+                  error,
+                  user: { id },
+                },
+              },
+            },
+          } = res;
+          expect(ok).toBe(true);
+          expect(error).toBe(null);
+          expect(id).toBe(userId);
+        });
+    });
     it.todo('should not find a profile');
   });
 
