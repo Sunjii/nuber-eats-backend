@@ -2,8 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
-import { getConnection } from 'typeorm';
+import { getConnection, Repository } from 'typeorm';
 import exp from 'constants';
+import { User } from 'src/users/entities/user.entity';
+import { getRepositoryToken } from '@nestjs/typeorm';
 
 jest.mock('got', () => {
   return {
@@ -20,6 +22,7 @@ const testUser = {
 
 describe('UsersModule (e2e)', () => {
   let app: INestApplication;
+  let usersRepository: Repository<User>;
   let jwtToken: string;
 
   beforeAll(async () => {
@@ -27,6 +30,7 @@ describe('UsersModule (e2e)', () => {
       imports: [AppModule],
     }).compile();
     app = module.createNestApplication();
+    usersRepository = module.get<Repository<User>>(getRepositoryToken(User));
     await app.init();
   });
 
@@ -148,7 +152,7 @@ describe('UsersModule (e2e)', () => {
     });
   });
 
-  it.todo('userProfile');
+  describe('userProfile', () => {});
 
   it.todo('me');
 
