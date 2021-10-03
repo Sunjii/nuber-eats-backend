@@ -152,7 +152,13 @@ describe('UsersModule (e2e)', () => {
     });
   });
 
-  describe('userProfile', () => {});
+  describe('userProfile', () => {
+    beforeAll(async () => {
+      console.log(await usersRepository.find());
+    });
+    it("should see a user's profile", () => {});
+    it.todo('should not find a profile');
+  });
 
   it.todo('me');
 
