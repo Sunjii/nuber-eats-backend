@@ -3,7 +3,6 @@ import { CONFIG_OPTIONS } from 'src/common/common.constants';
 import { EmailVar, MailModuleOptions } from './mail.interfaces';
 import got from 'got';
 import * as FormData from 'form-data';
-import { text } from 'express';
 
 @Injectable()
 export class MailService {
