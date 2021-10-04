@@ -1,6 +1,5 @@
 import { UseGuards } from '@nestjs/common';
 import { Resolver, Query, Mutation, Args, Context } from '@nestjs/graphql';
-import { createHmac } from 'crypto';
 import { AuthGuard } from 'src/auth/atuh.guard';
 import { AuthUser } from 'src/auth/aut-user.decorator';
 import {
