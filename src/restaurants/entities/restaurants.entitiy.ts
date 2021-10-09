@@ -5,7 +5,7 @@ import { User } from 'src/users/entities/user.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
 import { Category } from './category.entity';
 
-@InputType({ isAbstract: true })
+@InputType('RestaurnatInputType', { isAbstract: true })
 @ObjectType()
 @Entity()
 export class Restaurant extends CoreEntity {
