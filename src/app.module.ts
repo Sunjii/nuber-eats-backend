@@ -56,6 +56,7 @@ import { RestaurantsModule } from './restaurants/restaurants.module';
       context: ({ req }) => ({ user: req['user'] }),
     }),
     UsersModule,
+    AuthModule,
     RestaurantsModule,
     JwtModule.forRoot({
       privateKey: process.env.PRIVATE_KEY,
