@@ -6,6 +6,10 @@ import {
   CreateRestaurantInput,
   CreateRestaurantOutput,
 } from './dtos/create-restaurant.dtos';
+import {
+  EditRestaurantInput,
+  EditRestaurantOutput,
+} from './dtos/edit-restaurant.dto';
 import { Category } from './entities/category.entity';
 import { Restaurant } from './entities/restaurants.entitiy';
 
@@ -18,6 +22,19 @@ export class RestaurantService {
     private readonly cateogires: Repository<Category>,
   ) {}
 
+  async getOrCreateCategory(name: string): Promise<Category> {
+    // slug
+    const categoryName = name.trim().toLowerCase();
+    const categorySlug = categoryName.replace(/ /g, '-');
+    let category = await this.cateogires.findOne({ slug: categorySlug });
+    if (!category) {
+      category = await this.cateogires.save(
+        this.cateogires.create({ slug: categorySlug, name: categoryName }),
+      );
+    }
+    return category;
+  }
+
   async createRestaurant(
     owner: User,
     createRestaurantInput: CreateRestaurantInput,
@@ -25,17 +42,9 @@ export class RestaurantService {
     try {
       const newRestaurant = this.restaurants.create(createRestaurantInput);
       newRestaurant.owner = owner;
-      // slug
-      const categoryName = createRestaurantInput.categoryName
-        .trim()
-        .toLowerCase();
-      const categorySlug = categoryName.replace(/ /g, '-');
-      let category = await this.cateogires.findOne({ slug: categorySlug });
-      if (!category) {
-        category = await this.cateogires.save(
-          this.cateogires.create({ slug: categorySlug, name: categoryName }),
-        );
-      }
+      const category = await this.getOrCreateCategory(
+        createRestaurantInput.categoryName,
+      );
       newRestaurant.category = category;
       await this.restaurants.save(newRestaurant);
       return {
@@ -43,6 +52,41 @@ export class RestaurantService {
       };
     } catch {
       return { ok: false, error: 'Could not create restaurnat' };
+    }
+  }
+
+  async editRestaurant(
+    owner: User,
+    editRestaurantInput: EditRestaurantInput,
+  ): Promise<EditRestaurantOutput> {
+    try {
+      // find restaurant
+      const restaurant = await this.restaurants.findOne(
+        editRestaurantInput.restaurantID,
+      );
+      if (!restaurant) {
+        return {
+          ok: false,
+          error: 'Restaurant not found',
+        };
+      }
+      // check the owner
+      if (owner.id !== restaurant.ownerId) {
+        return {
+          ok: false,
+          error: "You can't edit a restaurant that you don't own",
+        };
+      }
+      ////////////////////////////////////////////////////////////
+
+      return {
+        ok: true,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: 'Could not edit restaurant',
+      };
     }
   }
 }
