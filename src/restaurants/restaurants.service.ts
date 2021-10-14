@@ -79,6 +79,19 @@ export class RestaurantService {
         };
       }
       ////////////////////////////////////////////////////////////
+      let category: Category = null;
+      if (editRestaurantInput.categoryName) {
+        category = await this.cateogires.getOrCreate(
+          editRestaurantInput.categoryName,
+        );
+      }
+      await this.restaurants.save([
+        {
+          id: editRestaurantInput.restaurantID,
+          ...editRestaurantInput,
+          ...(category && { category }), // if category exisit will return object eaquals cateogry
+        },
+      ]);
 
       return {
         ok: true,
