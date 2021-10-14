@@ -12,17 +12,17 @@ import {
 } from './dtos/edit-restaurant.dto';
 import { Category } from './entities/category.entity';
 import { Restaurant } from './entities/restaurants.entitiy';
+import { CategoryRepository } from './repositories/category.repository';
 
 @Injectable()
 export class RestaurantService {
   constructor(
     @InjectRepository(Restaurant) // Repository import
     private readonly restaurants: Repository<Restaurant>,
-    @InjectRepository(Category)
-    private readonly cateogires: Repository<Category>,
+    private readonly cateogires: CategoryRepository,
   ) {}
 
-  async getOrCreateCategory(name: string): Promise<Category> {
+  async getOrCreate(name: string): Promise<Category> {
     // slug
     const categoryName = name.trim().toLowerCase();
     const categorySlug = categoryName.replace(/ /g, '-');
@@ -42,9 +42,10 @@ export class RestaurantService {
     try {
       const newRestaurant = this.restaurants.create(createRestaurantInput);
       newRestaurant.owner = owner;
-      const category = await this.getOrCreateCategory(
+      const category = await this.cateogires.getOrCreate(
         createRestaurantInput.categoryName,
       );
+
       newRestaurant.category = category;
       await this.restaurants.save(newRestaurant);
       return {
