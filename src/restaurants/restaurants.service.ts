@@ -22,19 +22,6 @@ export class RestaurantService {
     private readonly cateogires: CategoryRepository,
   ) {}
 
-  async getOrCreate(name: string): Promise<Category> {
-    // slug
-    const categoryName = name.trim().toLowerCase();
-    const categorySlug = categoryName.replace(/ /g, '-');
-    let category = await this.cateogires.findOne({ slug: categorySlug });
-    if (!category) {
-      category = await this.cateogires.save(
-        this.cateogires.create({ slug: categorySlug, name: categoryName }),
-      );
-    }
-    return category;
-  }
-
   async createRestaurant(
     owner: User,
     createRestaurantInput: CreateRestaurantInput,
