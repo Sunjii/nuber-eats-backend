@@ -1,11 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UserInputError } from 'apollo-server-errors';
 import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 import {
   CreateRestaurantInput,
   CreateRestaurantOutput,
 } from './dtos/create-restaurant.dtos';
+import {
+  DeleteRestaurantInput,
+  DeleteRestaurantOutput,
+} from './dtos/delete-restaurant.dto';
 import {
   EditRestaurantInput,
   EditRestaurantOutput,
@@ -87,6 +92,36 @@ export class RestaurantService {
       return {
         ok: false,
         error: 'Could not edit restaurant',
+      };
+    }
+  }
+
+  async deleteRestaurant(
+    owner: User,
+    { restaurantID }: DeleteRestaurantInput,
+  ): Promise<DeleteRestaurantOutput> {
+    try {
+      // find restaurant
+      const restaurant = await this.restaurants.findOne(restaurantID);
+      if (!restaurant) {
+        return {
+          ok: false,
+          error: 'Restaurant not found',
+        };
+      }
+      // check the owner
+      if (owner.id !== restaurant.ownerId) {
+        return {
+          ok: false,
+          error: "You can't delete a restaurant that you don't own",
+        };
+      }
+      // delete
+      await this.restaurants.delete(restaurantID);
+    } catch {
+      return {
+        ok: false,
+        error: 'Could not delete.',
       };
     }
   }
