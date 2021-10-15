@@ -118,6 +118,9 @@ export class RestaurantService {
       }
       // delete
       await this.restaurants.delete(restaurantID);
+      return {
+        ok: true,
+      };
     } catch {
       return {
         ok: false,

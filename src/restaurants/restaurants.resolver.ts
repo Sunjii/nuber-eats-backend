@@ -49,6 +49,9 @@ export class RestaurantsResolver {
     @AuthUser() owner: User,
     @Args('input') deleteREstaurantInput: DeleteRestaurantInput,
   ): Promise<DeleteRestaurantOutput> {
-    return this.deleteRestaurnat(owner, deleteREstaurantInput);
+    return this.restaurantService.deleteRestaurant(
+      owner,
+      deleteREstaurantInput,
+    );
   }
 }
