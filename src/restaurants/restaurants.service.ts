@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserInputError } from 'apollo-server-errors';
 import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 import { AllCategoriesOutput } from './dtos/all-categories.dto';
@@ -170,12 +169,13 @@ export class RestaurantService {
         take: 25,
         skip: (page - 1) * 25,
       });
-      category.restaurants = restaurants;
+      //category.restaurants = restaurants;
       const totalResults = await this.countRestaurant(category);
 
       return {
         ok: true,
         category,
+        restaurants,
         totalPages: Math.ceil(totalResults / 25),
       };
     } catch {
