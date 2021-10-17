@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserInputError } from 'apollo-server-errors';
 import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
+import { AllCategoriesOutput } from './dtos/all-categories.dto';
 import {
   CreateRestaurantInput,
   CreateRestaurantOutput,
@@ -127,5 +128,24 @@ export class RestaurantService {
         error: 'Could not delete.',
       };
     }
+  }
+
+  async allCategories(): Promise<AllCategoriesOutput> {
+    try {
+      const categories = await this.cateogires.find();
+      return {
+        ok: true,
+        categories,
+      };
+    } catch {
+      return {
+        ok: false,
+        error: 'Could not load categories',
+      };
+    }
+  }
+
+  countRestaurant(category: Category) {
+    return this.restaurants.count({ category });
   }
 }
