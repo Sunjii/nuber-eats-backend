@@ -4,6 +4,7 @@ import { UserInputError } from 'apollo-server-errors';
 import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 import { AllCategoriesOutput } from './dtos/all-categories.dto';
+import { CategoryInput, CategoryOutput } from './dtos/category.dto';
 import {
   CreateRestaurantInput,
   CreateRestaurantOutput,
@@ -147,5 +148,28 @@ export class RestaurantService {
 
   countRestaurant(category: Category) {
     return this.restaurants.count({ category });
+  }
+  async findCategoryBySlug({ slug }: CategoryInput): Promise<CategoryOutput> {
+    try {
+      const category = await this.cateogires.findOne(
+        { slug },
+        { relations: ['restaurants'] }, // need restaurants relation
+      );
+      if (!category) {
+        return {
+          ok: false,
+          error: 'Category not found',
+        };
+      }
+      return {
+        ok: true,
+        category,
+      };
+    } catch {
+      return {
+        ok: false,
+        error: 'Could not load category',
+      };
+    }
   }
 }
