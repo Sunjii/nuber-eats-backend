@@ -7,10 +7,11 @@ import { Restaurant } from './restaurants.entitiy';
 @InputType('DishOptionInputType', { isAbstract: true })
 @ObjectType()
 class DishOption {
+  // 옵션의 이름과, 선택사항, 가격
   @Field((type) => String)
   name: string;
-  @Field((type) => [String])
-  choices: string[];
+  @Field((type) => [String], { nullable: true })
+  choices?: string[];
   @Field((type) => Int)
   extra: number;
 }
@@ -30,8 +31,8 @@ export class Dish extends CoreEntity {
   @IsNumber()
   price: number;
 
-  @Field((type) => String)
-  @Column()
+  @Field((type) => String, { nullable: true })
+  @Column({ nullable: true })
   @IsString()
   photo: string;
 
@@ -41,9 +42,9 @@ export class Dish extends CoreEntity {
   @Length(10, 140)
   description: string;
 
-  @Field((type) => [DishOption])
-  @Column({ type: 'json' })
-  options: DishOption[];
+  @Field((type) => [DishOption], { nullable: true })
+  @Column({ type: 'json', nullable: true })
+  options?: DishOption[];
 
   // Many to One Relation
   @Field((type) => Restaurant)
