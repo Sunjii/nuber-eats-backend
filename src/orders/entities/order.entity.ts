@@ -7,8 +7,9 @@ import {
 } from '@nestjs/graphql';
 import { CoreEntity } from 'src/common/entities/core.entity';
 import { Dish } from 'src/restaurants/entities/dish.entity';
+import { Restaurant } from 'src/restaurants/entities/restaurants.entitiy';
 import { User } from 'src/users/entities/user.entity';
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne } from 'typeorm';
 
 export enum OrderStatus {
   Pending = 'Pending',
@@ -23,21 +24,30 @@ registerEnumType(OrderStatus, { name: 'OrderStatus' });
 @ObjectType()
 @Entity()
 export class Order extends CoreEntity {
-  @Field((type) => User)
-  @Field((type) => User)
+  @Field((type) => User, { nullable: true })
   @ManyToOne((type) => User, (user) => user.orders, {
-    onDelete: 'CASCADE',
+    onDelete: 'SET NULL',
+    nullable: true,
   })
-  owner: User;
-  custormer: User;
+  custormer?: User;
 
   @Field((type) => User, { nullable: true })
-  driver: User;
+  @ManyToOne((type) => User, (user) => user.rides, {
+    onDelete: 'SET NULL',
+    nullable: true,
+  })
+  driver?: User;
 
   @Field((type) => Restaurant)
+  @ManyToOne((type) => Restaurant, (restaurant) => restaurant.orders, {
+    onDelete: 'SET NULL',
+    nullable: true,
+  })
   restaurant: Restaurant;
 
   @Field((type) => [Dish])
+  @ManyToMany((type) => Dish)
+  @JoinTable() // order가 dish를 포함한다
   dishes: Dish[];
 
   @Field((type) => Float)

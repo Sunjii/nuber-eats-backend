@@ -47,9 +47,15 @@ export class User extends CoreEntity {
   @OneToMany((type) => Restaurant, (restaurant) => restaurant.owner)
   restaurnats: Restaurant[];
 
+  // for customer
   @Field((type) => [Order])
   @OneToMany((type) => Order, (orders) => orders.custormer)
   orders: Order[];
+
+  // for Dilivery man
+  @Field((type) => [Order])
+  @OneToMany((type) => Order, (orders) => orders.driver)
+  rides: Order[];
 
   @BeforeInsert()
   @BeforeUpdate()
