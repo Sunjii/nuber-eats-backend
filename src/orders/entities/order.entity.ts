@@ -50,8 +50,8 @@ export class Order extends CoreEntity {
   @JoinTable() // order가 dish를 포함한다
   dishes: Dish[];
 
-  @Field((type) => Float)
-  @Column()
+  @Field((type) => Float, { nullable: true })
+  @Column({ nullable: true })
   total: number;
 
   @Field((type) => OrderStatus)
