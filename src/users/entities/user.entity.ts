@@ -14,7 +14,7 @@ import { Order } from 'src/orders/entities/order.entity';
 
 export enum UserRole {
   Owner = 'Owner',
-  Client = 'Clinet',
+  Client = 'Client',
   Delivery = 'Delivery',
 }
 registerEnumType(UserRole, { name: 'UserRole' });
@@ -49,7 +49,7 @@ export class User extends CoreEntity {
 
   // for customer
   @Field((type) => [Order])
-  @OneToMany((type) => Order, (orders) => orders.custormer)
+  @OneToMany((type) => Order, (orders) => orders.customer)
   orders: Order[];
 
   // for Dilivery man
