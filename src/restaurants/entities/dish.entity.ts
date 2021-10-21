@@ -6,7 +6,7 @@ import { Restaurant } from './restaurants.entitiy';
 
 @InputType('DishOptionInputType', { isAbstract: true })
 @ObjectType()
-class DishOption {
+export class DishOption {
   // 옵션의 이름과, 선택사항, 가격
   @Field((type) => String)
   name: string;
