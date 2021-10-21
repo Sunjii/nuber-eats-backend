@@ -9,8 +9,8 @@ import { Dish, DishChoice } from 'src/restaurants/entities/dish.entity';
 export class OrderItemOption {
   @Field((type) => String)
   name: string;
-  @Field((type) => [DishChoice], { nullable: true })
-  choices?: DishChoice[];
+  @Field((type) => DishChoice, { nullable: true })
+  choice?: DishChoice;
   @Field((type) => Int, { nullable: true })
   extra?: number;
 }
