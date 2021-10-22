@@ -125,12 +125,14 @@ export class OrderService {
         orders = await this.orders.find({
           where: {
             customer: user,
+            status,
           },
         });
       } else if (user.role === UserRole.Delivery) {
         orders = await this.orders.find({
           where: {
             driver: user,
+            ...(status && { status }),
           },
         });
       } else if (user.role === UserRole.Owner) {
@@ -139,11 +141,15 @@ export class OrderService {
         const restaurants = await this.restaurants.find({
           where: {
             owner: user,
+            ...(status && { status }),
           },
           relations: ['orders'],
         });
         // get order from restaurants
         orders = restaurants.map((restaurant) => restaurant.orders).flat(1);
+        if (status) {
+          orders = orders.map((order) => order.status === status);
+        }
       }
       // return orders
       //console.log(orders);
