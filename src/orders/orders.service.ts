@@ -37,6 +37,8 @@ export class OrderService {
       };
     }
 
+    let orderFinalPrice = 0;
+    const orderItems: OrderItem[] = [];
     // make itmes
     for (const item of items) {
       // find dish
@@ -48,8 +50,8 @@ export class OrderService {
           error: 'Dish not found',
         };
       }
-
-      console.log(`Dish price: ${dish.price}`);
+      let dishFinalPrice = dish.price;
+      // console.log(`Dish price: ${dish.price}`);
       // get property from dish
       for (const itemOption of item.options) {
         const dishOption = dish.options.find(
@@ -57,7 +59,8 @@ export class OrderService {
         );
         if (dishOption) {
           if (dishOption.extra) {
-            console.log(`$USD + ${dishOption.extra}`);
+            //console.log(`$USD + ${dishOption.extra}`);
+            dishFinalPrice += dishOption.extra;
           } else {
             // choice에 따른 extra를 찾는다
             const dishOptionChoice = dishOption.choices.find(
@@ -65,28 +68,34 @@ export class OrderService {
             );
             if (dishOptionChoice) {
               if (dishOptionChoice.extra) {
-                console.log(`$USD + ${dishOptionChoice.extra}`);
+                //console.log(`$USD + ${dishOptionChoice.extra}`);
+                dishFinalPrice += dishOptionChoice.extra;
               }
             }
           }
         }
       }
+      orderFinalPrice = orderFinalPrice + dishFinalPrice;
 
-      // 유저가 보낸 옵션 찾기
-
-      await this.orderItems.save(
+      // orderitems에 각 주문을 추가
+      const orderItem = await this.orderItems.save(
         this.orderItems.create({
           dish,
           options: item.options,
         }),
       );
+      orderItems.push(orderItem);
     }
 
-    // create order
+    // create order!!!
     const order = await this.orders.save(
-      this.orders.create({ customer, restaurant }),
+      this.orders.create({
+        customer,
+        restaurant,
+        total: orderFinalPrice,
+        itmes: orderItems,
+      }),
     );
-
-    // add item to order
+    //console.log(order);
   }
 }
