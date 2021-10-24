@@ -63,9 +63,17 @@ import { OrderItem } from './orders/entities/order-item.entity';
       ],
     }),
     GraphQLModule.forRoot({
-      installSubscriptionHandlers: true,
+      installSubscriptionHandlers: true, // WS
       autoSchemaFile: true,
-      context: ({ req }) => ({ user: req['user'] }),
+      context: ({ req, connection }) => {
+        if (req) {
+          // http request
+          return { user: req['user'] };
+        } else {
+          // web socket
+          console.log(connection);
+        }
+      },
     }),
     UsersModule,
     AuthModule,
