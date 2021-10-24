@@ -20,7 +20,7 @@ export class AuthGuard implements CanActivate {
     }
 
     const gqlContext = GqlExecutionContext.create(context).getContext();
-    //console.log(gqlContext);
+    // console.log(gqlContext.token);
     // WS --> undefined
     // 누가 gaurad에게 context를 주었을까?
     // HTTP request -> jwt-middle ware -> take token from header, and find user

@@ -66,14 +66,10 @@ import { OrderItem } from './orders/entities/order-item.entity';
       installSubscriptionHandlers: true, // WS
       autoSchemaFile: true,
       context: ({ req, connection }) => {
-        if (req) {
-          // http request
-          return { headers: req.headers };
-        } else if (connection) {
-          // web socket connection
-          //console.log(connection);
-          return { headers: connection.context };
-        }
+        const TOKEN_KEY = 'x-jwt';
+        return {
+          token: req ? req.headers[TOKEN_KEY] : connection.context[TOKEN_KEY],
+        };
       },
     }),
     UsersModule,
