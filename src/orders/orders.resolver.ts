@@ -55,8 +55,14 @@ export class OrderResolver {
     return this.ordersService.editOrder(user, editOrderInput);
   }
 
+  //
+  // Subscription
+  //
+
   @Subscription((returns) => String)
-  orderSubscription() {
+  @Role(['Client'])
+  orderSubscription(@AuthUser() user: User) {
+    console.log(user);
     return pubsub.asyncIterator('');
   }
 }

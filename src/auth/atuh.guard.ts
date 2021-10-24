@@ -19,8 +19,13 @@ export class AuthGuard implements CanActivate {
       return true;
     }
 
-    const gglContext = GqlExecutionContext.create(context).getContext();
-    const user: User = gglContext['user'];
+    const gqlContext = GqlExecutionContext.create(context).getContext();
+    //console.log(gqlContext);
+    // WS --> undefined
+    // 누가 gaurad에게 context를 주었을까?
+    // HTTP request -> jwt-middle ware -> take token from header, and find user
+    // jwt put in req -> gql find user
+    const user: User = gqlContext['user'];
     if (!user) {
       // invalid token. can't go ahead...
       return false;
