@@ -3,7 +3,7 @@ import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
 import { PubSub } from 'graphql-subscriptions';
 import { AuthUser } from 'src/auth/aut-user.decorator';
 import { Role } from 'src/auth/role.decorator';
-import { PUB_SUB } from 'src/common/common.constants';
+import { NEW_PENDING_ORDER, PUB_SUB } from 'src/common/common.constants';
 import { User } from 'src/users/entities/user.entity';
 import { CreateOrderInput, CreateOrderOutput } from './dtos/create-order.dto';
 import { EditOrderInput, EditOrderOutput } from './dtos/edit-order.dto';
@@ -64,25 +64,16 @@ export class OrderResolver {
   //
   //
 
-  @Mutation((returns) => Boolean)
-  async orderReady(@Args('testID') testID: number) {
-    await this.pubSub.publish('test', {
-      // payload
-      readyOrder: testID,
-    });
-    return true;
-  }
-
-  @Subscription((returns) => String, {
-    filter: ({ readyOrder }, { testID }) => {
-      return readyOrder === testID;
+  // pending order
+  @Subscription((returns) => Order, {
+    filter: ({ pendingOrders: { ownerId } }, _, { user }) => {
+      // restaurnat와 user의 ownership을 체크
+      return ownerId === user.id;
     },
-    resolve: ({ readyOrder }) => {
-      return `Your Id is ${readyOrder}`;
-    },
+    resolve: ({ pendingOrders: { order } }) => order,
   })
-  @Role(['Any'])
-  readyOrder(@Args('testID') testID: number) {
-    return this.pubSub.asyncIterator('test');
+  @Role(['Owner'])
+  pendingOrders() {
+    return this.pubSub.asyncIterator(NEW_PENDING_ORDER);
   }
 }
