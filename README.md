@@ -26,7 +26,10 @@ The Backend of Nuber Eats Clone
 ## Orders Function
 
     - Orders CRUD
-    - Orders Subscription (Owner, Customer, Delivery)
+    - Orders Subscription
+      - Pending Orders for Owner
+      - Order Status for Customer
+      - Pending Pickup Order for Delivery
 
 ## Payment Function ~ Paddle
 

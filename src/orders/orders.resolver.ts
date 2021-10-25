@@ -59,18 +59,28 @@ export class OrderResolver {
   }
 
   //
+  //
   // Subscription
+  //
   //
 
   @Mutation((returns) => Boolean)
   async orderReady(@Args('testID') testID: number) {
     await this.pubSub.publish('test', {
-      readyOrder: `Your order ${testID} is ready...`,
+      // payload
+      readyOrder: testID,
     });
     return true;
   }
 
-  @Subscription((returns) => String)
+  @Subscription((returns) => String, {
+    filter: ({ readyOrder }, { testID }) => {
+      return readyOrder === testID;
+    },
+    resolve: ({ readyOrder }) => {
+      return `Your Id is ${readyOrder}`;
+    },
+  })
   @Role(['Any'])
   readyOrder(@Args('testID') testID: number) {
     return this.pubSub.asyncIterator('test');
