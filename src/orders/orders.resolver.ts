@@ -90,7 +90,29 @@ export class OrderResolver {
     return this.pubSub.asyncIterator(NEW_COOKED_ORDER);
   }
 
-  @Subscription((returns) => Order)
+  @Subscription((returns) => Order, {
+    filter: (
+      // 다른 order id에서 볼 수 없도록 필터링
+      { orderUpdates }: { orderUpdates: Order },
+      { input }: { input: OrderUpdatesInput },
+      { user }: { user: User },
+    ) => {
+      if (
+        orderUpdates.driverId !== user.id &&
+        orderUpdates.customerId !== user.id &&
+        orderUpdates.restaurant.ownerId !== user.id
+      ) {
+        console.log(
+          orderUpdates.driverId,
+          orderUpdates.customerId,
+          orderUpdates.restaurant.ownerId,
+          user.id,
+        );
+        return false;
+      }
+      return orderUpdates.id === input.id;
+    },
+  })
   @Role(['Any'])
   orderUpdates(@Args('input') orderUpdatesInput: OrderUpdatesInput) {
     return this.pubSub.asyncIterator(NEW_ORDER_UPDATE);

@@ -296,7 +296,6 @@ export class OrderService {
           });
         }
       }
-      console.log(newOrder);
       await this.pubSub.publish(NEW_ORDER_UPDATE, { orderUpdates: newOrder });
 
       return {
