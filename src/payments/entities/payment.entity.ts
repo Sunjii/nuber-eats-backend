@@ -16,9 +16,9 @@ export class Payment extends CoreEntity {
   @RelationId((payment: Payment) => payment.user)
   userId: number;
 
-  @Field((type) => Int)
+  @Field((type) => String)
   @Column()
-  transactionId: number;
+  transactionId: string;
 
   @Field((type) => Restaurant)
   @ManyToOne((type) => Restaurant)
