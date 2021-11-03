@@ -2,12 +2,29 @@
 
 The Backend of Nuber Eats Clone
 
+## User Model
+
+    - email verification
+    - password (hash)
+    - role [client, owner, dilivery]
+    - payment list
+
+## User Function
+
+    - Create account
+    - Find by ID
+    - Update profile
+    - Login
+    - Email verification
+
 ## Restaurant Model
 
     - name
     - category
     - address
     - coverImage
+    - menu
+    - promotion
 
 ## Restaurnat Function
 
@@ -22,6 +39,13 @@ The Backend of Nuber Eats Clone
     - Create Dish
     - Edit Dish
     - Delete Dish
+
+## Order Model
+
+    - menu
+    - options for menu
+    - total price
+    - order status
 
 ## Orders Function
 
