@@ -34,3 +34,4 @@ The Backend of Nuber Eats Clone
 ## Payment Function ~ Paddle
 
     - Cron Jobs
+      - task scheduling
