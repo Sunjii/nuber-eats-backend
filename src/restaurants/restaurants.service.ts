@@ -30,6 +30,8 @@ import { Dish } from './entities/dish.entity';
 import { Restaurant } from './entities/restaurants.entitiy';
 import { CategoryRepository } from './repositories/category.repository';
 
+const PAGENATION = 3;
+
 @Injectable()
 export class RestaurantService {
   constructor(
@@ -202,13 +204,13 @@ export class RestaurantService {
         };
       }
 
-      // pagination with 25
+      // pagination with PAGENATION
       const restaurants = await this.restaurants.find({
         where: {
           category,
         },
-        take: 25,
-        skip: (page - 1) * 25,
+        take: PAGENATION,
+        skip: (page - 1) * PAGENATION,
         order: {
           isPromoted: 'DESC',
         },
@@ -220,7 +222,7 @@ export class RestaurantService {
         ok: true,
         category,
         restaurants,
-        totalPages: Math.ceil(totalResults / 25),
+        totalPages: Math.ceil(totalResults / PAGENATION),
       };
     } catch {
       return {
@@ -235,8 +237,8 @@ export class RestaurantService {
     try {
       // restaurants and count
       const [restaurants, totalResults] = await this.restaurants.findAndCount({
-        skip: (page - 1) * 25,
-        take: 25,
+        skip: (page - 1) * PAGENATION,
+        take: PAGENATION,
         order: {
           isPromoted: 'DESC',
         },
@@ -244,7 +246,7 @@ export class RestaurantService {
       return {
         ok: true,
         results: restaurants,
-        totalPages: Math.ceil(totalResults / 25),
+        totalPages: Math.ceil(totalResults / PAGENATION),
         totalResults,
       };
     } catch {
@@ -265,14 +267,14 @@ export class RestaurantService {
           name: ILike(`%${query}%`),
         }, // typeORM - ILike : find all upper and lower case
         // todo : make pagination's repository?
-        skip: (page - 1) * 25,
-        take: 25,
+        skip: (page - 1) * PAGENATION,
+        take: PAGENATION,
       });
       return {
         ok: true,
         searchingResults: restaurnats,
         totalResults,
-        totalPages: Math.ceil(totalResults / 25),
+        totalPages: Math.ceil(totalResults / PAGENATION),
       };
     } catch {
       return {
