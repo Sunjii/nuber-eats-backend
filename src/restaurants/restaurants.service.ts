@@ -223,6 +223,7 @@ export class RestaurantService {
         category,
         restaurants,
         totalPages: Math.ceil(totalResults / PAGENATION),
+        totalResults,
       };
     } catch {
       return {
